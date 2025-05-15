@@ -9,7 +9,6 @@ import HeroDock from '@/components/HeroDock';
 import ProgressTunnel from '@/components/ProgressTunnel';
 import RiskToggleRail from '@/components/RiskToggleRail';
 import FooterGlyphBar from '@/components/FooterGlyphBar';
-import DebugAIConsole from '@/components/DebugAIConsole';
 import Toast from '@/components/Toast';
 import OnboardingGuide from '@/components/OnboardingGuide';
 import SignalEngine from '@/components/SignalEngine';
@@ -177,21 +176,6 @@ export default function EchoAgent() {
     });
   };
   
-  // Debug data for development mode
-  const debugData = {
-    userState: {
-      address: address,
-      isConnected: isConnected,
-      currentStep: currentStep,
-      selectedRisk: selectedRisk
-    },
-    appState: {
-      isGalaxyReady: isGalaxyReady,
-      highlightedTokens: highlightedTokens
-    },
-    selectedSignal: selectedSignal,
-    lastTrade: lastTrade
-  };
   
   return (
     <>
@@ -373,8 +357,6 @@ export default function EchoAgent() {
         {/* Footer */}
         <FooterGlyphBar />
         
-        {/* Debug Console (dev only) */}
-        <DebugAIConsole data={debugData} />
         
         {/* Control Buttons */}
         <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">

@@ -8,7 +8,6 @@ import RiskToggleRail from '@/components/RiskToggleRail';
 import RealtimeNanoHub from '@/components/RealtimeNanoHub';
 import FaqAccordion from '@/components/FaqAccordion';
 import FooterGlyphBar from '@/components/FooterGlyphBar';
-import DebugAIConsole from '@/components/DebugAIConsole';
 import Toast from '@/components/Toast';
 import OnboardingGuide from '@/components/OnboardingGuide';
 import DepositNeuralFrame from '@/components/DepositNeuralFrame';
@@ -168,30 +167,6 @@ export default function Home() {
     });
   };
   
-  // Debug data for development mode
-  const debugData = {
-    userState: {
-      address: address,
-      isConnected: isConnected,
-      currentStep: currentStep,
-      selectedRisk: selectedRisk
-    },
-    appState: {
-      isGalaxyReady: isGalaxyReady,
-      highlightedTokens: highlightedTokens
-    },
-    simulatedData: {
-      pnl24h: selectedRisk === 'conservative' ? "+2.53" :
-              selectedRisk === 'balanced' ? "+5.85" : 
-              selectedRisk === 'aggressive' ? "+10.27" : "+0.00",
-      token: selectedRisk === 'conservative' ? "BTC" :
-             selectedRisk === 'balanced' ? "ETH" : 
-             selectedRisk === 'aggressive' ? "SOL" : "---",
-      confidence: selectedRisk === 'conservative' ? 0.82 :
-                  selectedRisk === 'balanced' ? 0.75 : 
-                  selectedRisk === 'aggressive' ? 0.91 : 0
-    }
-  };
   
   return (
     <>
@@ -249,8 +224,6 @@ export default function Home() {
         {/* Footer */}
         <FooterGlyphBar />
         
-        {/* Debug Console (dev only) */}
-        <DebugAIConsole data={debugData} />
         
         {/* Control Buttons */}
         <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
