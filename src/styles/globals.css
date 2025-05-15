@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-primary: #3B82F6;
+  --c-primary-glow: rgba(59,130,246,0.25);
+  --c-ink: #6366F1;
+  --c-bg: #0D1117;
+  --c-surface: #FFFFFF0D;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --c-primary: #2563EB;
+    --c-primary-glow: #60A5FA;
+    --c-ink: #4F46E5;
+    --c-bg: #F4F6F8;
+    --c-surface: #FFFFFF05;
+  }
+}
+
+body {
+  @apply bg-bg text-white font-sans leading-[1.55];
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1 {
+  @apply font-space font-bold text-display;
+}
+
+h3 {
+  @apply font-space font-semibold text-heading;
+}
+
+.mono {
+  @apply font-mono;
+}
+
+.focus-visible {
+  @apply outline-electric-ink outline-4 animate-focus-ring;
+}
+
+@layer components {
+  .cta-button {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-space font-semibold px-6 py-3 rounded-lg hover:scale-[1.06] transition-all duration-200 shadow-lg shadow-indigo-500/30 border border-indigo-400/30;
+  }
+  
+  .container-grid {
+    @apply mx-auto px-4 sm:px-6 md:px-8 max-w-[1320px];
+  }
+  
+  .galaxy-canvas {
+    @apply fixed top-0 left-0 w-full h-screen -z-10;
+  }
+  
+  /* Web3-themed components */
+  .neo-card {
+    @apply bg-gradient-to-br from-indigo-950/40 to-blue-950/30 backdrop-blur-sm rounded-xl border border-indigo-500/30 shadow-lg shadow-blue-500/5 relative overflow-hidden;
+  }
+  
+  .neo-button {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 
+    text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center 
+    transition-all duration-300 shadow-lg shadow-indigo-500/20
+    border border-indigo-400/30;
+  }
+  
+  .neo-input {
+    @apply bg-indigo-900/30 border border-indigo-500/30 rounded-xl px-4 py-3 
+    text-blue-100 placeholder-blue-300/50 focus:outline-none focus:ring-2 
+    focus:ring-blue-500/50 font-medium shadow-inner;
+  }
+  
+  .neo-badge {
+    @apply px-3 py-1 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 
+    rounded-full border border-indigo-500/30 text-indigo-300 text-xs 
+    font-mono flex items-center shadow-inner shadow-indigo-500/5;
+  }
+  
+  .echo-token-icon {
+    @apply w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/80 to-indigo-500/80 
+    flex items-center justify-center shadow-lg shadow-blue-500/20;
+  }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.2);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+/* Text Glitch Effect */
+.text-glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.text-glitch::before,
+.text-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.text-glitch::before {
+  left: 2px;
+  text-shadow: -1px 0 rgba(255, 0, 0, 0.7);
+  animation: text-glitch-anim-1 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+
+.text-glitch::after {
+  left: -2px;
+  text-shadow: -1px 0 rgba(0, 0, 255, 0.7);
+  animation: text-glitch-anim-2 3s infinite linear alternate-reverse;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+}
+
+@keyframes text-glitch-anim-1 {
+  0% { transform: translate(0); }
+  10% { transform: translate(-1px, 1px); }
+  20% { transform: translate(-2px, 1px); }
+  30% { transform: translate(1px, -1px); }
+  40% { transform: translate(1px, 1px); }
+  50% { transform: translate(-1px, -2px); }
+  60% { transform: translate(-2px, 1px); }
+  70% { transform: translate(1px, 1px); }
+  80% { transform: translate(0); }
+  100% { transform: translate(0); }
+}
+
+@keyframes text-glitch-anim-2 {
+  0% { transform: translate(0); }
+  15% { transform: translate(-1px, -1px); }
+  30% { transform: translate(1px, -1px); }
+  45% { transform: translate(1px, 1px); }
+  60% { transform: translate(-1px, 1px); }
+  75% { transform: translate(-1px, -1px); }
+  90% { transform: translate(1px, 1px); }
+  100% { transform: translate(0); }
+}
+
+/* Animated Gradient Background */
+.animated-gradient {
+  background: linear-gradient(-45deg, #3b82f6, #4f46e5, #8b5cf6, #2563eb);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Cyberpunk-style Glow */
+.cyber-glow {
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.7),
+               0 0 20px rgba(99, 102, 241, 0.5),
+               0 0 30px rgba(99, 102, 241, 0.3);
+}
+
+.cyber-box {
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.7),
+              0 0 20px rgba(99, 102, 241, 0.3);
+}
