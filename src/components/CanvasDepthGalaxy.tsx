@@ -15,6 +15,7 @@ interface StarFieldProps {
 }
 
 const Stars: React.FC<StarFieldProps> = ({ starCount = 900, highlightTokens = [] }) => {
+  console.log('🌟 Stars component rendering', { starCount, highlightTokens });
   const meshRef = useRef<InstancedMesh>(null);
   const [isReady, setIsReady] = useState(false);
   const [highlightedStars, setHighlightedStars] = useState<number[]>([]);
@@ -24,8 +25,10 @@ const Stars: React.FC<StarFieldProps> = ({ starCount = 900, highlightTokens = []
   const [textureError, setTextureError] = useState<boolean>(false);
   
   useEffect(() => {
+    console.log('🔄 Stars texture loading effect');
     // Create a basic fallback texture if loading fails
     const createFallbackTexture = () => {
+      console.log('🎨 Creating fallback texture');
       const canvas = document.createElement('canvas');
       canvas.width = 32;
       canvas.height = 32;
@@ -64,15 +67,30 @@ const Stars: React.FC<StarFieldProps> = ({ starCount = 900, highlightTokens = []
     
     // Try to load the texture
     const loadTexture = async () => {
+      console.log('🔍 Attempting to load star.png texture');
       try {
         const loader = new THREE.TextureLoader();
         const loadedTexture = await new Promise((resolve, reject) => {
-          loader.load('/star.png', resolve, undefined, reject);
+          loader.load('/star.png', 
+            (tex) => {
+              console.log('✅ Texture loaded successfully');
+              resolve(tex);
+            }, 
+            (progress) => {
+              console.log('📊 Texture loading progress:', progress);
+            }, 
+            (error) => {
+              console.error('❌ Texture loading error:', error);
+              reject(error);
+            }
+          );
         });
+        console.log('✅ Setting loaded texture');
         setTexture(loadedTexture);
       } catch (error) {
-        console.error('Failed to load star texture:', error);
+        console.error('❌ Failed to load star texture:', error);
         setTextureError(true);
+        console.log('🎨 Using fallback texture');
         setTexture(createFallbackTexture());
       }
     };
@@ -83,8 +101,9 @@ const Stars: React.FC<StarFieldProps> = ({ starCount = 900, highlightTokens = []
   const temp = useRef(new Object3D());
   const color = useRef(new Color());
   
-  // Initialize star positions
+  // Initialize star positions with more visible attributes
   useEffect(() => {
+    console.log('🌌 Initializing star positions', { starCount, meshRef: !!meshRef.current });
     if (meshRef.current) {
       for (let i = 0; i < starCount; i++) {
         const theta = 2 * Math.PI * Math.random();
@@ -100,8 +119,8 @@ const Stars: React.FC<StarFieldProps> = ({ starCount = 900, highlightTokens = []
         
         meshRef.current.setMatrixAt(i, temp.current.matrix);
         
-        // Set default star color (white with slight variations)
-        const brightness = 0.5 + Math.random() * 0.5;
+        // Brighter stars - increased base brightness
+        const brightness = 0.8 + Math.random() * 0.2; // Much brighter base value
         color.current.setRGB(brightness, brightness, brightness);
         meshRef.current.setColorAt(i, color.current);
       }
@@ -160,17 +179,28 @@ const Stars: React.FC<StarFieldProps> = ({ starCount = 900, highlightTokens = []
   
   // Wait for texture to be loaded or fallback created
   if (!texture) {
+    console.log('⏳ Waiting for texture to load');
     return null;
   }
   
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, starCount]}>
-      <planeGeometry args={[0.25, 0.25]} />
+    <instancedMesh 
+      ref={meshRef} 
+      args={[undefined, undefined, starCount]}
+      onAfterRender={() => {
+        if (!isReady) {
+          console.log('🎬 Stars rendered to screen');
+          setIsReady(true);
+        }
+      }}
+    >
+      <planeGeometry args={[1.0, 1.0]} /> {/* Even larger stars for better visibility */}
       <meshBasicMaterial 
         map={texture} 
         transparent 
         depthWrite={false}
         vertexColors 
+        opacity={1.0}
       />
     </instancedMesh>
   );
@@ -183,21 +213,56 @@ interface CanvasDepthGalaxyProps {
 }
 
 const CanvasDepthGalaxy: React.FC<CanvasDepthGalaxyProps> = ({ 
-  starCount = 900, 
+  starCount = 2500, // Increased default star count dramatically
   highlightTokens = [], 
   onReady 
 }) => {
+  console.log('🔄 CanvasDepthGalaxy component rendering');
+  
   useEffect(() => {
     if (onReady) {
+      console.log('⏱️ Galaxy onReady timeout starting');
       // Simulate texture loading time
-      const timeout = setTimeout(() => onReady(), 500);
+      const timeout = setTimeout(() => {
+        console.log('🚀 Galaxy onReady callback firing');
+        onReady();
+      }, 500);
       return () => clearTimeout(timeout);
     }
   }, [onReady]);
   
+  // Error boundary for THREE.js/Canvas errors
+  const [hasError, setHasError] = useState(false);
+  
+  // Handle THREE.js errors
+  const handleError = (error: Error) => {
+    console.error('❌ THREE.js error:', error);
+    setHasError(true);
+  };
+  
+  if (hasError) {
+    return (
+      <div className="galaxy-canvas bg-indigo-900/30 flex items-center justify-center">
+        <div className="text-red-400 text-center p-4">
+          <h3 className="text-lg font-bold">Galaxy Rendering Error</h3>
+          <p>There was an error rendering the 3D galaxy.</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="galaxy-canvas">
-      <Canvas camera={{ position: [0, 0, 20], fov: 60 }}>
+      <Canvas 
+        camera={{ position: [0, 0, 15], fov: 75 }} // Closer camera and wider field of view
+        onCreated={(state) => console.log('✅ Canvas created', { gl: !!state.gl })}
+        onError={(e) => {
+          console.error('❌ Canvas error event:', e);
+          setHasError(true);
+        }}
+      >
+        <ambientLight intensity={1.0} /> {/* Brighter ambient light */}
+        <pointLight position={[0, 0, 0]} intensity={2.0} /> {/* Central light source */}
         <Stars starCount={starCount} highlightTokens={highlightTokens} />
       </Canvas>
     </div>

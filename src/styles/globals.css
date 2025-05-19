@@ -27,6 +27,8 @@
 body {
   @apply bg-bg text-white font-sans leading-[1.55];
   min-height: 100vh;
+  /* TODO: `overflow-x: hidden;` can mask underlying layout overflow issues. 
+     Consider removing temporarily to identify and fix root causes of horizontal scroll. */
   overflow-x: hidden;
 }
 
@@ -186,4 +188,46 @@ h3 {
 .cyber-box {
   box-shadow: 0 0 10px rgba(99, 102, 241, 0.7),
               0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Risk Terrain Visualizer styles */
+.risk-terrain-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.risk-terrain-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  transition: all 0.5s ease;
+}
+
+/* Risk toggle rail 3D styles */
+.risk-info-panel {
+  backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 
+              0 0 15px rgba(99, 102, 241, 0.2);
+  border-radius: 12px;
+}
+
+/* Particle animation */
+@keyframes float-particle {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-40px) translateX(10px); opacity: 0; }
+}
+
+.particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.7);
+  pointer-events: none;
+  animation: float-particle 3s ease-in-out infinite;
 }

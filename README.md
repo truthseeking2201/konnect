@@ -1,76 +1,74 @@
-# Konstellation Echo Lite "Neon Singularity"
+# KONNECT - Advanced Trading Platform
 
-A modern, WebGL-powered frontend for algorithmic trading in the Konstellation ecosystem.
+## Risk Terrain Visualizer
+
+This project introduces an advanced 3D Risk Selection experience with terrain visualization to provide users with an interactive and visually engaging way to select their risk profiles.
 
 ## Features
 
-- Three.js powered 3D galaxy background
-- Zero-friction wallet connect experience
-- Risk profile selection with visual feedback
-- Real-time performance monitoring dashboard
-- Social-Alpha transparency with JSON debug view
-- Fully responsive and accessible design
+- **Interactive 3D Terrain Visualization**: Dynamically rendered based on the selected risk level
+- **Real-time Particle Effects**: Visual feedback that changes based on risk profile
+- **Smooth Transitions**: Animated transitions between different risk levels
+- **Detailed Information Panel**: Pop-up panel that provides more context about each risk profile
+- **Keyboard Navigation**: Full accessibility support
 
-## Tech Stack
+## Components
 
-- Next.js (React framework)
-- TypeScript for type safety
-- Three.js / React Three Fiber for WebGL visuals
-- Framer Motion for animations
-- Tailwind CSS for styling
-- Ethers.js for wallet interaction
+### RiskTerrainVisualizer
 
-## Getting Started
+A Three.js-powered component that generates a dynamic 3D terrain reflecting the selected risk level:
 
-First, install dependencies:
+- Conservative: Low, gentle terrain with blue coloring and minimal particles
+- Balanced: Moderate peaks with indigo coloring and medium particle activity
+- Aggressive: High, volatile terrain with purple coloring and intense particle effects
 
-```bash
-npm install
-# or
-yarn
-# or
-pnpm install
+### RiskToggleRail3D
+
+An enhanced version of the original RiskToggleRail component that incorporates:
+
+- 3D terrain visualization
+- Contextual highlighting and animations
+- Detailed information panels
+- Improved hover effects
+- Risk-specific color schemes
+
+## Testing the Risk Profile Selector
+
+Visit the `/risk-profile` page to see and test the new Risk Profile Selector:
+
+```
+http://localhost:3000/risk-profile
 ```
 
-Then, run the development server:
+## Implementation Details
+
+### Technologies Used
+
+- **Three.js**: For 3D terrain visualization
+- **React**: Component architecture
+- **Framer Motion**: For UI animations
+- **WebGL Shaders**: For advanced terrain effects
+- **React Spring**: For smooth property transitions
+
+### Performance Considerations
+
+The 3D visualization is optimized for performance with:
+
+- Dynamic level-of-detail based on device capabilities
+- Efficient particle system
+- WebGL acceleration
+- Throttled animations on lower-end devices
+
+## Development
+
+To run the project locally:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000/risk-profile](http://localhost:3000/risk-profile) to view the new Risk Profile Selector.
 
-## Design System
+## Credits
 
-This project follows the PRD specifications with a "Neon Singularity" aesthetic:
-
-- Primary Color: #E8FF65
-- Surface Glow: #CDFF55
-- Electric Ink: #14F1FF
-- Background: #0D1117
-
-The design principles include Social-Alpha Transparency, Zero-Friction Onboarding, Spectacle + Simplicity, Kinetic Storytelling, and Accessible Premium UX.
-
-## Performance Targets
-
-- FCP ≤ 1.2s
-- CLS ≤ 0.05
-- Total JS ≤ 85 KB (gzipped)
-- WebGL GPU time ≤ 4ms/frame avg
-
-## Accessibility
-
-The application is designed with accessibility in mind:
-- Fully keyboard navigable
-- ARIA labels and roles
-- Focus management
-- Color contrast compliance
-- Screen reader support
-
-## License
-
-Proprietary - Konstellation Labs 2025
+Design and implementation by the KONNECT team.

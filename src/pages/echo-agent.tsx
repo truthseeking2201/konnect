@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, Shield, Zap, AlertTriangle, Info } from 'lucide-react';
@@ -11,10 +11,11 @@ import RiskToggleRail from '@/components/RiskToggleRail';
 import FooterGlyphBar from '@/components/FooterGlyphBar';
 import Toast from '@/components/Toast';
 import OnboardingGuide from '@/components/OnboardingGuide';
-import SignalEngine from '@/components/SignalEngine';
+import EnhancedSignalEngine from '@/components/EnhancedSignalEngine';
 import TradeAgent from '@/components/TradeAgent';
 import EchoDashboard from '@/components/EchoDashboard';
 import EchoAgentChat from '@/components/EchoAgentChat';
+import WalletConnectionTransition from '@/components/WalletConnectionTransition';
 
 type RiskLevel = 'conservative' | 'balanced' | 'aggressive';
 
@@ -56,70 +57,30 @@ export default function EchoAgent() {
   const [autoDemo, setAutoDemo] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   
-  // Setup demo flow with automated transitions for presentation
-  useEffect(() => {
-    // Automatically mark galaxy as ready after 1 second
-    const galaxyReadyTimer = setTimeout(() => {
-      setIsGalaxyReady(true);
-      console.log("Galaxy ready!");
-      
-      // Analytics tracking
-      console.log("[Analytics] paint_galaxy", { deviceFps: 60 });
-      
-      // If auto demo is enabled, automatically connect wallet after 2 seconds
-      if (autoDemo) {
-        const connectTimer = setTimeout(() => {
-          if (!isConnected) {
-            handleConnectWallet();
-          }
-        }, 2000);
-        
-        return () => clearTimeout(connectTimer);
-      }
-    }, 1000);
-    
-    return () => clearTimeout(galaxyReadyTimer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoDemo, isConnected]);
-  
-  // Auto-select risk profile after wallet connection
-  useEffect(() => {
-    if (autoDemo && isConnected && !selectedRisk) {
-      const riskTimer = setTimeout(() => {
-        handleRiskSelect('balanced');
-      }, 3000);
-      
-      return () => clearTimeout(riskTimer);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoDemo, isConnected, selectedRisk]);
-  
-  // Handle wallet connection - simulated
-  const handleConnectWallet = async () => {
+  // Handle wallet connection initiation
+  const handleConnectWallet = useCallback(async () => {
     if (!isConnected && !isConnecting) {
       setIsConnecting(true);
       console.log("[Analytics] wallet_connect_attempt", { provider: 'metamask' });
-      
-      // Simulate connection delay
-      setTimeout(() => {
-        // Successful connection
-        setIsConnected(true);
-        setIsConnecting(false);
-        setAddress('0x7F5Ec7A125eB1F31536d431E27bd6d27C00Af3E2');
-        setCurrentStep(2);
-        
-        console.log("[Analytics] wallet_connected", { 
-          address: '0x7F5Ec7A125eB1F31536d431E27bd6d27C00Af3E2', 
-          chainId: '0x1' 
-        });
-        
-        setToast({
-          type: 'success',
-          message: 'Wallet connected successfully!'
-        });
-      }, 1500);
+      // The actual connection and state update will be handled by WalletConnectionTransition and handleWalletConnected
     }
-  };
+  }, [isConnected, isConnecting, setIsConnecting]);
+
+  // Handle wallet connected (callback for WalletConnectionTransition)
+  const handleWalletConnected = useCallback(() => {
+    setIsConnected(true);
+    setIsConnecting(false);
+    setAddress('0x7F5Ec7A125eB1F31536d431E27bd6d27C00Af3E2'); // Simulated address
+    setCurrentStep(2);
+    console.log("[Analytics] wallet_connected", { 
+      address: '0x7F5Ec7A125eB1F31536d431E27bd6d27C00Af3E2', 
+      chainId: '0x1' 
+    });
+    setToast({
+      type: 'success',
+      message: 'Wallet connected successfully!'
+    });
+  }, [setIsConnected, setIsConnecting, setAddress, setCurrentStep, setToast]);
   
   // Clear toast
   const clearToast = () => {
@@ -127,7 +88,7 @@ export default function EchoAgent() {
   };
   
   // Handle risk selection
-  const handleRiskSelect = (risk: RiskLevel) => {
+  const handleRiskSelect = useCallback((risk: RiskLevel) => {
     console.log("[Analytics] risk_selected", { level: risk });
     setSelectedRisk(risk);
     setCurrentStep(3);
@@ -152,10 +113,10 @@ export default function EchoAgent() {
       type: 'success',
       message: `${risk.charAt(0).toUpperCase() + risk.slice(1)} risk profile activated`
     });
-  };
+  }, [setSelectedRisk, setCurrentStep, setHighlightedTokens, setToast]);
   
   // Handle signal selection
-  const handleSelectSignal = (signal: Signal) => {
+  const handleSelectSignal = useCallback((signal: Signal) => {
     setSelectedSignal(signal);
     
     // Show info toast
@@ -163,10 +124,10 @@ export default function EchoAgent() {
       type: 'info',
       message: `Analyzing ${signal.token} signal from ${signal.source}...`
     });
-  };
+  }, [setSelectedSignal, setToast]);
   
   // Handle trade execution
-  const handleTrade = (tradeDetails: any) => {
+  const handleTrade = useCallback((tradeDetails: any) => {
     setLastTrade(tradeDetails);
     
     // Show success toast
@@ -174,8 +135,35 @@ export default function EchoAgent() {
       type: 'success',
       message: `${tradeDetails.direction.toUpperCase()} trade executed: ${tradeDetails.token}`
     });
-  };
+  }, [setLastTrade, setToast]);
   
+  // Setup demo flow with automated transitions for presentation
+  useEffect(() => {
+    const galaxyReadyTimer = setTimeout(() => {
+      setIsGalaxyReady(true);
+      console.log("Galaxy ready!");
+      console.log("[Analytics] paint_galaxy", { deviceFps: 60 });
+      if (autoDemo) {
+        const connectTimer = setTimeout(() => {
+          if (!isConnected) {
+            handleConnectWallet(); // Uses the new lean handleConnectWallet
+          }
+        }, 2000);
+        return () => clearTimeout(connectTimer);
+      }
+    }, 1000);
+    return () => clearTimeout(galaxyReadyTimer);
+  }, [autoDemo, isConnected, handleConnectWallet, setIsGalaxyReady]);
+  
+  // Auto-select risk profile after wallet connection
+  useEffect(() => {
+    if (autoDemo && isConnected && !selectedRisk) {
+      const riskTimer = setTimeout(() => {
+        handleRiskSelect('balanced');
+      }, 3000);
+      return () => clearTimeout(riskTimer);
+    }
+  }, [autoDemo, isConnected, selectedRisk, handleRiskSelect]);
   
   return (
     <>
@@ -294,7 +282,7 @@ export default function EchoAgent() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Left Column - Signal Engine */}
                   <div className="lg:col-span-1">
-                    <SignalEngine 
+                    <EnhancedSignalEngine 
                       isActive={!!selectedRisk}
                       selectedRisk={selectedRisk}
                       onSelectSignal={handleSelectSignal}
@@ -394,6 +382,17 @@ export default function EchoAgent() {
             guideType="echoAgent"
           />
         )}
+
+        {/* Wallet Connection Transition */}
+        <AnimatePresence>
+          {isConnecting && (
+            <WalletConnectionTransition 
+              isConnecting={isConnecting}
+              onConnected={handleWalletConnected}
+              walletAddress="0x7F5Ec7A125eB1F31536d431E27bd6d27C00Af3E2"
+            />
+          )}
+        </AnimatePresence>
       </main>
     </>
   );
