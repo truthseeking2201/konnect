@@ -69,6 +69,8 @@ npm run dev
 
 Then open [http://localhost:3000/risk-profile](http://localhost:3000/risk-profile) to view the new Risk Profile Selector.
 
+When clicking **Connect Wallet**, wait for the demo connection animation to finish (about three seconds). Once the success message appears the next steps of the demo become available.
+
 ## Credits
 
 Design and implementation by the KONNECT team.

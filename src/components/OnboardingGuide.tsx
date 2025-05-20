@@ -33,7 +33,7 @@ const OnboardingGuide: React.FC<OnboardingGuideProps> = ({
   const echoLiteTips = [
     {
       title: "Neural Interface Sync",
-      description: "Begin by connecting your quantum wallet to establish neural sync. Activate the 'Connect Wallet' node in the hero dimension.",
+      description: "Begin by connecting your quantum wallet to establish neural sync. Activate the 'Connect Wallet' node in the hero dimension and wait a few seconds for the connection animation to complete.",
       highlight: "Connect Wallet"
     },
     {
