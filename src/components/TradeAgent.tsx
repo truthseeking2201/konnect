@@ -33,8 +33,53 @@ interface TradeAgentProps {
   onTrade?: (tradeDetails: any) => void;
 }
 
+interface ParticleFlowProps {
+  active: boolean;
+  direction: 'long' | 'short';
+  speed?: number;
+}
+
+interface CircuitPathProps {
+  position: THREE.Vector3;
+  scale?: number;
+  color?: string;
+  animated?: boolean;
+}
+
+interface HolographicDisplayProps {
+  position: [number, number, number];
+  children: React.ReactNode;
+  width?: number;
+  height?: number;
+  rotation?: [number, number, number];
+}
+
+interface EnergyCoreProps {
+  active: boolean;
+  direction: 'long' | 'short';
+  executing?: boolean;
+  success?: boolean;
+}
+
+interface TradeAgentSceneProps {
+  selectedSignal: Signal | null;
+  isAnalyzing: boolean;
+  isTrading: boolean;
+  tradeResult: {
+    token: string;
+    direction: 'long' | 'short';
+    entryPrice: number;
+    positionSize: number;
+    stopLoss: number;
+    takeProfit: number;
+    txHash: string;
+  } | null;
+  riskProfile?: 'conservative' | 'balanced' | 'aggressive';
+  tradeConfig: TradeConfig;
+}
+
 // Animated particle system for trade execution
-const ParticleFlow = ({ active, direction, speed = 0.5 }) => {
+const ParticleFlow: React.FC<ParticleFlowProps> = ({ active, direction, speed = 0.5 }) => {
   const count = 300;
   const positions = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -100,7 +145,7 @@ const ParticleFlow = ({ active, direction, speed = 0.5 }) => {
 };
 
 // Animated circuit paths
-const CircuitPath = ({ position, scale = 1, color = '#3b82f6', animated = true }) => {
+const CircuitPath: React.FC<CircuitPathProps> = ({ position, scale = 1, color = '#3b82f6', animated = true }) => {
   const pathRef = useRef<THREE.Line>(null);
   const startPoint = useMemo(() => new THREE.Vector3(-2 + Math.random() * 4, -2 + Math.random() * 4, 0), []);
   
@@ -150,11 +195,13 @@ const CircuitPath = ({ position, scale = 1, color = '#3b82f6', animated = true }
   });
   
   return (
-    <line 
-      ref={pathRef} 
+    <line
+      ref={pathRef as unknown as React.MutableRefObject<any>}
+      // @ts-ignore geometry prop
       geometry={lineGeometry}
       position={position}
-      scale={[scale, scale, scale]}
+      // @ts-ignore scale prop
+      scale={[scale, scale, scale] as any}
     >
       <lineBasicMaterial
         color={color}
@@ -167,7 +214,7 @@ const CircuitPath = ({ position, scale = 1, color = '#3b82f6', animated = true }
 };
 
 // Floating holographic display
-const HolographicDisplay = ({ position, children, width = 2, height = 1, rotation = [0, 0, 0] }) => {
+const HolographicDisplay: React.FC<HolographicDisplayProps> = ({ position, children, width = 2, height = 1, rotation = [0, 0, 0] }) => {
   const groupRef = useRef<THREE.Group>(null);
   
   useFrame(({ clock }) => {
@@ -207,7 +254,7 @@ const HolographicDisplay = ({ position, children, width = 2, height = 1, rotatio
 };
 
 // Core energy sphere for trade execution
-const EnergyCore = ({ active, direction, executing = false, success = false }) => {
+const EnergyCore: React.FC<EnergyCoreProps> = ({ active, direction, executing = false, success = false }) => {
   const sphereRef = useRef<THREE.Mesh>(null);
   const innerSphereRef = useRef<THREE.Mesh>(null);
   
@@ -286,7 +333,7 @@ const EnergyCore = ({ active, direction, executing = false, success = false }) =
 };
 
 // 3D scene component
-const TradeAgentScene = ({ 
+const TradeAgentScene: React.FC<TradeAgentSceneProps> = ({
   selectedSignal,
   isAnalyzing,
   isTrading,
@@ -299,11 +346,11 @@ const TradeAgentScene = ({
     const paths = [];
     for (let i = 0; i < 12; i++) {
       paths.push({
-        position: [
+        position: new THREE.Vector3(
           (Math.random() - 0.5) * 15,
           (Math.random() - 0.5) * 15,
           (Math.random() - 0.5) * 3
-        ],
+        ),
         scale: 0.5 + Math.random() * 1.5,
         color: Math.random() > 0.5 ? '#3b82f6' : '#4f46e5',
         animated: Math.random() > 0.3
@@ -375,7 +422,7 @@ const TradeAgentScene = ({
           <HolographicDisplay position={[3, 2, 0]} width={2.8} height={1.2} rotation={[0, 0, 0.05]}>
             <Html transform>
               <div className="text-blue-300 w-64 h-32 p-3 font-mono text-xs">
-                <div className="font-bold text-blue-200 mb-2">{riskProfile.toUpperCase()} PROFILE</div>
+                <div className="font-bold text-blue-200 mb-2">{riskProfile?.toUpperCase()} PROFILE</div>
                 <div className="grid grid-cols-2 gap-1">
                   <div>Max Risk:</div>
                   <div className="text-blue-200">{tradeConfig.maxDailyRisk}%</div>
