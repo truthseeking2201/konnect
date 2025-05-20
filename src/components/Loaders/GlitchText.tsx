@@ -11,14 +11,14 @@ interface GlitchTextProps {
   as?: React.ElementType;
 }
 
-const GlitchText: React.FC<GlitchTextProps> = ({
+const GlitchText = ({
   text,
   className = '',
   intensity = 'medium',
   color = '#3B82F6', // primary blue
   glowColor = 'rgba(99, 102, 241, 0.7)', // electric ink with transparency
   as: Component = 'div',
-}) => {
+}: GlitchTextProps) => {
   // Custom animation variants based on intensity
   const intensityConfig = {
     low: {
@@ -66,8 +66,10 @@ const GlitchText: React.FC<GlitchTextProps> = ({
     },
   };
 
+  const ComponentTag = Component as any;
+
   return (
-    <Component
+    <ComponentTag
       className={`relative inline-block ${className}`}
       style={{ color }}
       data-text={text}
@@ -131,7 +133,7 @@ const GlitchText: React.FC<GlitchTextProps> = ({
             .join('')}
         </motion.span>
       )}
-    </Component>
+    </ComponentTag>
   );
 };
 
