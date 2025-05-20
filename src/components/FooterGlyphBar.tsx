@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { ExternalLink, Github, Twitter, MessageCircle, FileText } from 'lucide-react';
 
 interface FooterLink {
@@ -71,13 +72,14 @@ const FooterGlyphBar: React.FC = () => {
         <div className="mt-6 pt-6 border-t border-gray-800 text-xs text-gray-500 text-center">
           <p>
             Echo Lite is in beta. Not financial advice. Always DYOR. 
-            <a 
-              href="/terms" 
-              className="text-electric-ink ml-1 underline hover:no-underline"
-              onClick={() => trackEvent('link_docs_click', { href: '/terms' })}
-            >
-              Terms & Privacy <ExternalLink size={10} className="inline" />
-            </a>
+            <Link href="/terms" legacyBehavior>
+              <a
+                className="text-electric-ink ml-1 underline hover:no-underline"
+                onClick={() => trackEvent('link_docs_click', { href: '/terms' })}
+              >
+                Terms & Privacy <ExternalLink size={10} className="inline" />
+              </a>
+            </Link>
           </p>
         </div>
       </div>

@@ -433,10 +433,10 @@ const ParticleEffect = ({ x, y, color = '#4F46E5' }: { x: number, y: number, col
   );
 };
 
-const EchoAgentChat: React.FC<EchoAgentChatProps> = ({ 
-  isWalletConnected, 
+const EchoAgentChat: React.FC<EchoAgentChatProps> = ({
+  isWalletConnected,
   selectedRisk,
-  onCommand 
+  onCommand
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -447,6 +447,55 @@ const EchoAgentChat: React.FC<EchoAgentChatProps> = ({
   const [particleEffects, setParticleEffects] = useState<{x: number, y: number, id: string}[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingInputRef = useRef<HTMLInputElement>(null);
+
+  // Inject chat animation styles only on the client
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      .message-appear-animation {
+        animation: messageAppear 0.5s ease-out forwards;
+      }
+
+      @keyframes messageAppear {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      .glitch-effect {
+        position: relative;
+      }
+
+      .glitch-effect::before,
+      .glitch-effect::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+      }
+
+      .glitch-effect::before {
+        left: 2px;
+        text-shadow: -1px 0 rgba(255, 0, 0, 0.5);
+        animation: glitch-anim-1 2s infinite linear alternate-reverse;
+      }
+
+      .glitch-effect::after {
+        left: -2px;
+        text-shadow: -1px 0 rgba(0, 0, 255, 0.5);
+        animation: glitch-anim-2 3s infinite linear alternate-reverse;
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
   
   // Introductory message when chat is first opened
   useEffect(() => {
@@ -1263,46 +1312,5 @@ Echo Agent Status:
     </>
   );
 };
-
-// Add styled classes to enable animations
-const styleSheet = document.createElement("style");
-styleSheet.textContent = `
-  .message-appear-animation {
-    animation: messageAppear 0.5s ease-out forwards;
-  }
-  
-  @keyframes messageAppear {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-  
-  .glitch-effect {
-    position: relative;
-  }
-  
-  .glitch-effect::before,
-  .glitch-effect::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.8;
-  }
-  
-  .glitch-effect::before {
-    left: 2px;
-    text-shadow: -1px 0 rgba(255, 0, 0, 0.5);
-    animation: glitch-anim-1 2s infinite linear alternate-reverse;
-  }
-  
-  .glitch-effect::after {
-    left: -2px;
-    text-shadow: -1px 0 rgba(0, 0, 255, 0.5);
-    animation: glitch-anim-2 3s infinite linear alternate-reverse;
-  }
-`;
-document.head.appendChild(styleSheet);
 
 export default EchoAgentChat;

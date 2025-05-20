@@ -305,7 +305,6 @@ const HeroDock: React.FC<HeroDockProps> = ({ onConnectWallet, isWalletConnected 
                 boxShadow: "0 0 20px 2px rgba(99, 102, 241, 0.5)"
               }}
               whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2, ease: [0.21, 0.68, 0.19, 1.01] }}
               className={`
                 bg-gradient-to-r from-blue-600 to-indigo-600
                 hover:from-blue-500 hover:to-indigo-500
