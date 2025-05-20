@@ -73,15 +73,20 @@ const RiskProfilePage = () => {
           <footer className="mt-24 text-center text-gray-400 text-sm">
             <p>© 2025 KONNECT - Advanced Trading Platform</p>
             <div className="flex justify-center items-center space-x-6 mt-4">
-              <Link href="javascript:void(0);" className="hover:text-blue-400 transition-colors">
+              <Link href="/terms" className="hover:text-blue-400 transition-colors">
                 Terms
               </Link>
-              <Link href="javascript:void(0);" className="hover:text-blue-400 transition-colors">
+              <Link href="/privacy" className="hover:text-blue-400 transition-colors">
                 Privacy
               </Link>
-              <Link href="javascript:void(0);" className="hover:text-blue-400 transition-colors">
+              <a
+                href="https://docs.konstellation.tech"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-400 transition-colors"
+              >
                 Documentation
-              </Link>
+              </a>
             </div>
           </footer>
         </div>
