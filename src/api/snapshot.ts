@@ -62,6 +62,8 @@ export const getSnapshot = async (wallet: string): Promise<SnapshotData> => {
   };
 };
 
-export default {
+const snapshotApi = {
   getSnapshot
 };
+
+export default snapshotApi;

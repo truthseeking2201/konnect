@@ -394,7 +394,7 @@ const NetworkEdges: React.FC<{
     // Animate edges with flowing dash pattern
     edgeRefs.current.forEach((line, index) => {
       if (line.material instanceof THREE.LineDashedMaterial) {
-        line.material.dashOffset -= 0.01 * edges[index].strength;
+        (line.material as any).dashOffset -= 0.01 * edges[index].strength;
       }
     });
   });
@@ -435,8 +435,9 @@ const NetworkEdges: React.FC<{
           <line
             key={`${edge.source}-${edge.target}`}
             ref={(el) => {
-              if (el) edgeRefs.current[index] = el;
+              if (el) edgeRefs.current[index] = el as unknown as THREE.Line;
             }}
+            // @ts-ignore three.js geometry prop
             geometry={lineGeometry}
           >
             <lineDashedMaterial

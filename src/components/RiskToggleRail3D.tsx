@@ -243,9 +243,9 @@ const RiskToggleRail3D: React.FC<RiskToggleRail3DProps> = ({ onSelect, selected 
     <div className="container-grid py-8 relative">
       {/* 3D Terrain Visualization */}
       <div className="absolute inset-0 flex justify-center items-center" style={{ zIndex: 0, opacity: 0.9 }}>
-        <RiskTerrainVisualizer 
-          riskLevel={hoveredRisk || selectedRisk} 
-          width={window.innerWidth > 768 ? 800 : 300}
+        <RiskTerrainVisualizer
+          riskLevel={hoveredRisk || selectedRisk}
+          width={(typeof window !== 'undefined' && window.innerWidth > 768) ? 800 : 300}
           height={400}
         />
       </div>
